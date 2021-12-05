@@ -1,23 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import "./App.css";
+import PresentList from "./PresentList";
+
+function getPresentsFromLocalStorage() {
+  let presentsString = localStorage.getItem("presents");
+  if (presentsString && presentsString.length > 0) {
+    return presentsString.split(",");
+  } else {
+    return [];
+  }
+}
 
 function App() {
+  const [presents, setPresents] = useState(getPresentsFromLocalStorage());
+  const [inputValue, setInputValue] = useState("");
+
+  function removePresent(present) {
+    setPresents(presents.filter((gift) => gift !== present));
+  }
+
+  useEffect(() => {
+    localStorage.setItem("presents", presents);
+  }, [presents]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div id="app">
+      <h1 className="presents-title">Christmas Presents List</h1>
+      <div className="input-row">
+        <input
+          className="add-present-input"
+          value={inputValue}
+          onChange={(event) => {
+            setInputValue(event.target.value);
+          }}
+        ></input>
+        <button
+          className="submit-button"
+          onClick={(e) => {
+            if (inputValue && inputValue.length > 0) {
+              // add present
+              setPresents([...presents, inputValue]);
+              // clean up the field
+              setInputValue("");
+            }
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          Add Present
+        </button>
+      </div>
+      <div className="present-list-container">
+        {presents.map((present) => (
+          <PresentList present={present} removePresent={removePresent} />
+        ))}
+      </div>
+      <p>
+        You have <strong>{presents.length} presents</strong> in your list!
+      </p>
     </div>
   );
 }
