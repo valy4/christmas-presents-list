@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import PresentList from "./PresentList";
 
+
+
 function getPresentsFromLocalStorage() {
   let presentsString = localStorage.getItem("presents");
   if (presentsString && presentsString.length > 0) {
@@ -15,6 +17,7 @@ function App() {
   const [presents, setPresents] = useState(getPresentsFromLocalStorage());
   const [inputValue, setInputValue] = useState("");
 
+
   function removePresent(present) {
     setPresents(presents.filter((gift) => gift !== present));
   }
@@ -22,6 +25,8 @@ function App() {
   useEffect(() => {
     localStorage.setItem("presents", presents);
   }, [presents]);
+
+
 
   return (
     <div id="app">
@@ -49,9 +54,11 @@ function App() {
         </button>
       </div>
       <div className="present-list-container">
+
         {presents.map((present) => (
           <PresentList present={present} removePresent={removePresent} />
         ))}
+
       </div>
       <p>
         You have <strong>{presents.length} presents</strong> in your list!
